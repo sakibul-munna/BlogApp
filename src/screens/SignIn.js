@@ -40,7 +40,7 @@ const SignIn = (props) => {
                     <Button
                         style={styles.buttonStyle}
                         icon={<AntDesign name="login" size={24} color="black" />}
-                        title='  Sign In'
+                        title='    Sign In'
                         type='solid'
                         onPress={async function(){
                             let userData = await getDataJSON(Email);
@@ -56,8 +56,8 @@ const SignIn = (props) => {
                     />
                     <Button
                         style={styles.buttonStyle}
-                        icon={<AntDesign name="user" size={24} color="blue" />}
-                        title="Don't Have an Account?"
+                        icon={<AntDesign name="user" size={24} color="black" />}
+                        title="    Don't Have an Account?"
                         type='clear'
                         onPress={
                             function () {

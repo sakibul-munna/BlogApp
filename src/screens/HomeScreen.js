@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, View, StyleSheet, FlatList, ActivityIndicator, } from "react-native";
+import { ScrollView, View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, } from "react-native";
 import { Card, Button, Text, Avatar, Input, Header, } from "react-native-elements";
 import PostCard from "./../components/PostCard";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { AuthContext } from "../providers/AuthProvider";
 import { addPostJSON, getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunction";
-import { LogBox } from 'react-native';
+import moment from "moment";
 
 const HomeScreen = (props) => {
   const [posts, setPosts] = useState([]);
   const [recentPost, setRecentPost] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [postNo, setPostNo] = useState(0);
-  const [postDate, setPostDate] = useState("");
-  var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const input = React.createRef();
+
 
   const loadPosts = async () => {
     setLoading(true);
@@ -25,7 +23,6 @@ const HomeScreen = (props) => {
 
   useEffect(() => {
     loadPosts();
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }, []);
 
   if (!loading) {
@@ -53,6 +50,9 @@ const HomeScreen = (props) => {
             />
             <Card>
               <Input
+                ref={input}
+                clearButtonMode={'always'}
+                clearButtonMode={'always'}
                 placeholder="What's On Your Mind?"
                 leftIcon={<Entypo name="pencil" size={24} color="black" />}
                 onChangeText={
@@ -63,17 +63,18 @@ const HomeScreen = (props) => {
               />
               <Button title="Post" type="outline" onPress={function () {
                 setLoading(true);
-                setPostNo(postNo + 1);
-                var date = new Date().getDate(); //Current Date
-                var month = monthNames[new Date().getMonth()]; //Current Month
-                var year = new Date().getFullYear();
-                setPostDate(date + ' ' + month + ' ' + year);
-                console.log(postDate);
+                let flag = 0;
+                if (posts == undefined) {
+                  flag = 1;
+                }
+                else {
+                  flag = posts.length + 1;
+                }
                 let postDetail = {
-                  ID: postNo,
+                  post_ID: flag,
                   author: auth.CurrentUser.name,
                   body: recentPost,
-                  created_at: "Posted On " + postDate,
+                  created_at: "Posted On " + moment().format("DD MMM, YYYY"),
                   likes: [],
                   comments: []
                 }
@@ -82,29 +83,29 @@ const HomeScreen = (props) => {
                   storeDataJSON('Posts', [postDetail]);
                 } else {
                   setPosts([...posts, postDetail]);
-                  addPostJSON('Posts', postDetail);
+                  addDataJSON('Posts', postDetail);
                 }
                 setLoading(false);
               }} />
             </Card>
-
-            <FlatList
-              data={posts}
-              inverted={true}
-              scrollsToTop={true}
-              keyExtractor={(item) => item.ID}
-              renderItem={function ({ item }) {
-                return (
-                  <PostCard
-                    author={item.author}
-                    title={item.created_at}
-                    body={item.body}
-                    navigation={props.navigation}
-                    post={item}
-                  />
-                );
-              }}
-            />
+            <SafeAreaView style={flex = 1}>
+              <FlatList
+                data={posts}
+                inverted={true}
+                keyExtractor={(item) => item.post_ID}
+                renderItem={function ({ item }) {
+                  return (
+                    <PostCard
+                      author={item.author}
+                      title={item.created_at}
+                      body={item.body}
+                      navigation={props.navigation}
+                      post={item}
+                    />
+                  );
+                }}
+              />
+            </SafeAreaView>
           </View>
         )}
       </AuthContext.Consumer>

@@ -9,7 +9,7 @@ import NotificationScreen from "./src/screens/NotificationScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
 import SignIn from "./src/screens/SignIn";
 import SignUp from "./src/screens/SignUp";
-import IndividualPostScreen  from "./src/screens/IndividualPostScreen";
+import PostScreen  from "./src/screens/PostScreen";
 
 import { AuthContext, AuthProvider } from "./src/providers/AuthProvider";
 import { Entypo, AntDesign, Ionicons } from "@expo/vector-icons";
@@ -31,7 +31,7 @@ const HomePostStackScreen = () =>{
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen name="Home" component={HomeScreen} options={{headerShown: false}}/>
-      <HomeStack.Screen name="PostScreen" component={IndividualPostScreen} options={{headerShown: false}}/>
+      <HomeStack.Screen name="PostScreen" component={PostScreen} options={{headerShown: false}}/>
     </HomeStack.Navigator>
   )
 }

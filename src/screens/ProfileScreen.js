@@ -4,6 +4,7 @@ import { Text, Card, Button, Avatar, Header, Icon } from "react-native-elements"
 import { AuthContext } from "../providers/AuthProvider";
 import { MaterialCommunityIcons, FontAwesome5, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { removeData } from "../functions/AsyncStorageFunction";
+import UploadPhoto from "../components/UploadPhoto";
 const ProfileScreen = (props) => {
   console.log(props);
   return (
@@ -29,18 +30,7 @@ const ProfileScreen = (props) => {
             }}
           />
           <View style={styles.viewStyle2}>
-            <Avatar
-              containerStyle={{ backgroundColor: '#ffab91' }}
-              rounded
-              size={'xlarge'}
-              icon={{
-                name: 'user',
-                type: 'font-awesome',
-                color: 'black',
-                size: 100,
-              }}
-              activeOpacity={1}
-            />
+          <UploadPhoto props={props} />
             <Text style={styles.textStyle2}>
               {auth.CurrentUser.name}
             </Text>

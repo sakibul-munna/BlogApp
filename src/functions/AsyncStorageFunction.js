@@ -19,7 +19,7 @@ const storeDataJSON = async (key, value) => {
   }
 };
 
-const addPostJSON = async (key, value) => {
+const addDataJSON = async (key, value) => {
   try {
     let val = await AsyncStorage.getItem(key);
     val = JSON.parse(val);
@@ -61,9 +61,10 @@ const getDataJSON = async (key) => {
 const removeData = async (key) => {
   try {
     await AsyncStorage.removeItem(key);
+    alert("Deleted!")
   } catch (error) {
     alert(error);
   }
 };
 
-export { storeData, addPostJSON, storeDataJSON, getData, getDataJSON, removeData };
+export { storeData, addDataJSON, storeDataJSON, getData, getDataJSON, removeData };
