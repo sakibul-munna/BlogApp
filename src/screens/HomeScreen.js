@@ -4,7 +4,7 @@ import { Card, Button, Text, Avatar, Input, Header, } from "react-native-element
 import PostCard from "./../components/PostCard";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { AuthContext } from "../providers/AuthProvider";
-import { addPostJSON, getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunction";
+import { addDataJSON, getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunction";
 import moment from "moment";
 
 const HomeScreen = (props) => {
@@ -85,6 +85,8 @@ const HomeScreen = (props) => {
                   setPosts([...posts, postDetail]);
                   addDataJSON('Posts', postDetail);
                 }
+                input.current.clear();
+                setRecentPost('');
                 setLoading(false);
               }} />
             </Card>
@@ -96,6 +98,9 @@ const HomeScreen = (props) => {
                 renderItem={function ({ item }) {
                   return (
                     <PostCard
+                      currentUser_Name={auth.CurrentUser.name}
+                      currentUser_Email={auth.CurrentUser.email}
+                      post_ID={item.post_ID}
                       author={item.author}
                       title={item.created_at}
                       body={item.body}

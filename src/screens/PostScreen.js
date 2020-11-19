@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, } from "react-native";
-import { Card, Button, Text, FlatList, Avatar, ActivityIndicator, Input, Header, SafeAreaView } from "react-native-elements";
+import { View, StyleSheet, FlatList, } from "react-native";
+import { Card, Button, Text, Avatar, ActivityIndicator, Input, Header, SafeAreaView } from "react-native-elements";
 import { AuthContext } from "../providers/AuthProvider";
 import { Entypo } from "@expo/vector-icons";
 import { storeDataJSON, addDataJSON, getDataJSON } from '../functions/AsyncStorageFunction';
@@ -16,13 +16,14 @@ const PostScreen = (props) => {
     const [postComments, setPostComments] = useState([]);
     const [loading, setLoading] = useState(false);
     const input = React.createRef();
+    const [allNotifications, setAllNotifications] = useState([]);
 
     const loadComments = async () => {
         setLoading(true);
         let allcomments = await getDataJSON('Comments');
-        setComments(allcomments);
+        setallComments(allcomments);
         if (allcomments != null) {
-            setPostComments(allcomments.filter((el) => el.postid == info.postid));
+            setPostComments(allcomments.filter((thisComment) => thisComment.post_ID == info.post_ID));
         } else {
             setPostComments([]);
         }
@@ -80,7 +81,7 @@ const PostScreen = (props) => {
                             {info.body}
                         </Text>
                     </Card>
-                    <Text style={styles.textstyle}>0 Likes, 0 Comments.</Text>
+                    <Text style={styles.textstyle}>0 Likes, {postComments.length} Comments.</Text>
 
                     <Card.Divider />
                     <Input
@@ -131,26 +132,45 @@ const PostScreen = (props) => {
                                 }
                                 input.current.clear();
                                 setcurrentComment('');
+
+                                flag = 0;
+                                if (allNotifications == undefined) {
+                                    flag = 1;
+                                }
+                                else {
+                                    flag = allNotifications.length + 1;
+                                }
+                                let newNotification = {
+                                    notified_user_email: props.currentUser_Email,
+                                    notification_ID: flag,
+                                    creator: auth.CurrentUser.name,
+                                    type: "Commented On",
+                                }
+                                if (allNotifications == undefined) {
+                                    setAllNotifications([newNotification]);
+                                    storeDataJSON('Notifications', [newNotification]);
+                                } else {
+                                    setAllNotifications([...allNotifications, newNotification]);
+                                    addDataJSON('Notifications', newNotification);
+                                }
                             }
                         }
                         />
                     </View>
-                    <SafeAreaView style={flex = 1}>
-                        <FlatList
-                            data={postComments}
-                            scrollsToTop={true}
-                            keyExtractor={(item) => item.comment_ID}
-                            renderItem={function ({ item }) {
-                                return (
-                                    <CommentCard
-                                        author={item.author}
-                                        time={item.time}
-                                        body={item.body}
-                                    />
-                                );
-                            }}
-                        />
-                    </SafeAreaView>
+                    <FlatList
+                        data={postComments}
+                        scrollsToTop={true}
+                        keyExtractor={(item) => item.comment_ID}
+                        renderItem={function ({ item }) {
+                            return (
+                                <CommentCard
+                                    author={item.author}
+                                    time={item.time}
+                                    body={item.body}
+                                />
+                            );
+                        }}
+                    />
                 </View>
             )}
         </AuthContext.Consumer>
